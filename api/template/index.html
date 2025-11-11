@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Spotify DL API • Docs & Playground</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --lavender:#b388ff;
+  --violet:#7c4dff;
+  --violet-2:#6a3df6;
+  --bg:#0d071a;
+  --bg-2:#130a2b;
+  --panel:#1b113a;
+  --ink:#efeaff;
+  --muted:#cfc6ffcc;
+  --ring:0 0 0 3px rgba(124,77,255,.35);
+  --ok:#a5f3c6;
+  --err:#ff9bb0;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(60vmax 60vmax at 10% -10%, #3a2282 0%, transparent 60%),
+    radial-gradient(60vmax 60vmax at 100% 0%, #2a1970 0%, transparent 55%),
+    linear-gradient(160deg, var(--bg) 0%, var(--bg-2) 100%);
+}
+.container{max-width:1100px;margin:0 auto;padding:22px}
+.header{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{
+  width:56px;height:56px;border-radius:16px;position:relative;
+  background:conic-gradient(from 140deg, var(--violet), var(--lavender) 50%, #e0ccff);
+  box-shadow:0 12px 36px rgba(124,77,255,.35), inset 0 0 30px rgba(255,255,255,.08);
+}
+.title{display:flex;flex-direction:column;gap:4px}
+.title h1{font-size:28px;margin:0;letter-spacing:.2px}
+.title .sub{color:var(--muted);font-size:14px}
+.meta{margin-left:auto;display:flex;gap:10px;flex-wrap:wrap}
+.pill{
+  padding:6px 12px;border:1px solid rgba(179,136,255,.35);
+  border-radius:999px;background:rgba(20,15,43,.6);color:var(--lavender);font-size:12px;text-decoration:none
+}
+.grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;margin-top:18px}
+@media (max-width: 980px){.grid{grid-template-columns:1fr}}
+.card{
+  background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+  border:1px solid rgba(179,136,255,.22);
+  border-radius:18px;padding:16px;box-shadow:0 10px 36px rgba(20,0,50,.28);backdrop-filter:blur(8px)
+}
+.card h2{margin:4px 0 10px;font-size:18px;color:var(--lavender)}
+.tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.tab{
+  background:#1a1140;border:1px solid rgba(179,136,255,.25);color:#efeaff;
+  padding:8px 12px;border-radius:12px;font-weight:600;cursor:pointer;user-select:none
+}
+.tab[aria-selected="true"]{background:linear-gradient(180deg, var(--violet), var(--violet-2))}
+.section{display:none}
+.section.active{display:block}
+.field{display:grid;gap:8px;margin:12px 0}
+label{font-size:12px;color:var(--muted)}
+input,button,select{font:inherit}
+.input{
+  width:100%;background:#130a2b;border:1px solid rgba(179,136,255,.28);color:var(--ink);
+  padding:12px;border-radius:12px;outline:none
+}
+.input:focus{box-shadow:var(--ring);border-color:var(--violet)}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row>*{flex:1}
+.btn{
+  background:linear-gradient(180deg, var(--violet), var(--violet-2));
+  color:#fff;border:none;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;transition:transform .06s ease, filter .2s ease
+}
+.btn:hover{filter:brightness(1.08)}
+.btn:active{transform:translateY(1px)}
+.btn-ghost{
+  background:#20124b;border:1px solid rgba(179,136,255,.35);color:#efeaff;border-radius:12px;padding:10px 12px;font-weight:600;cursor:pointer
+}
+.endpoint{display:flex;align-items:center;gap:10px;font-family:ui-monospace,monospace;font-size:13px;flex-wrap:wrap}
+.tag{border:1px solid rgba(179,136,255,.35);padding:4px 8px;border-radius:999px;color:#e8e0ff}
+.method{font-weight:800}
+.path{color:#fff}
+.kbd{background:#0e0822;border:1px solid rgba(179,136,255,.28);padding:2px 8px;border-radius:8px;font-size:12px}
+.sep{height:1px;background:linear-gradient(90deg, transparent, rgba(179,136,255,.35), transparent);margin:14px 0}
+pre{margin:0;background:#0f0a21;border:1px solid rgba(179,136,255,.22);padding:14px;border-radius:14px;overflow:auto;max-height:420px}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;color:#efe8ff}
+.badge{padding:3px 8px;border-radius:8px;font-size:11px}
+.badge.ok{background:rgba(165,243,198,.12);border:1px solid rgba(165,243,198,.5);color:var(--ok)}
+.badge.err{background:rgba(255,155,176,.12);border:1px solid rgba(255,155,176,.5);color:var(--err)}
+.footer{margin:18px 0 6px;text-align:center;color:var(--muted);font-size:12px}
+.link{color:var(--lavender);text-decoration:none}
+.flex{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.inline{display:inline-flex;gap:10px;align-items:center}
+.hidden{display:none}
+.toast{
+  position:fixed;left:50%;transform:translateX(-50%);
+  bottom:20px;background:#20124b;border:1px solid rgba(179,136,255,.4);
+  color:#efeaff;padding:10px 14px;border-radius:12px;z-index:50;opacity:0;pointer-events:none;transition:opacity .2s ease
+}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="brand"></div>
+    <div class="title">
+      <h1>Spotify DL API</h1>
+      <div class="sub">Lavender-violet playground to search tracks and check direct downloads</div>
+    </div>
+    <div class="meta">
+      <span class="pill">Owner: Stellar</span>
+      <a class="pill" href="/docs">OpenAPI / Swagger</a>
+      <span class="pill">@ApexServers</span>
+    </div>
+  </div>
+
+  <div class="grid">
+    <section class="card">
+      <div class="tabs" role="tablist" aria-label="Endpoints">
+        <button class="tab" role="tab" aria-selected="true" data-tab="search">Search</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="download">Download</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="examples">cURL</button>
+      </div>
+
+      <div id="search" class="section active" role="tabpanel">
+        <div class="endpoint"><span class="kbd">GET</span><span class="path">/sp/search</span></div>
+        <div class="field">
+          <label for="q">Query</label>
+          <input id="q" class="input" placeholder="Imagine Dragons Believer"/>
+        </div>
+        <div class="row">
+          <button id="btnSearch" class="btn">Run</button>
+          <button class="btn-ghost" data-copy>Copy URL</button>
+        </div>
+      </div>
+
+      <div id="download" class="section" role="tabpanel">
+        <div class="endpoint"><span class="kbd">GET</span><span class="path">/sp/dl</span></div>
+        <div class="field">
+          <label for="url">Spotify Track URL</label>
+          <input id="url" class="input" placeholder="https://open.spotify.com/track/0pqnGHJpmpxLKifKRmU6WP"/>
+        </div>
+        <div class="row">
+          <button id="btnDL" class="btn">Run</button>
+          <button class="btn-ghost" data-copy>Copy URL</button>
+        </div>
+      </div>
+
+      <div id="examples" class="section" role="tabpanel">
+        <div class="field">
+          <label>Examples</label>
+          <pre><code id="curlBox"></code></pre>
+        </div>
+        <div class="row">
+          <button class="btn" id="copyCurl">Copy cURL</button>
+        </div>
+      </div>
+    </section>
+
+    <aside class="card">
+      <div class="flex">
+        <h2 style="margin:0">Response</h2>
+        <span id="statusBadge" class="badge hidden"></span>
+      </div>
+      <div class="sep"></div>
+      <pre><code id="out">// waiting…</code></pre>
+    </aside>
+  </div>
+
+  <div class="footer">Powered by Stellar • Updates <a class="link" href="https://t.me/ApexServers" target="_blank" rel="noreferrer">@ApexServers</a></div>
+</div>
+
+<div id="toast" class="toast">Copied</div>
+
+<script>
+const O = location.origin;
+const tabs = document.querySelectorAll(".tab");
+const sections = document.querySelectorAll(".section");
+tabs.forEach(t=>t.addEventListener("click",()=>{
+  tabs.forEach(x=>x.setAttribute("aria-selected","false"));
+  t.setAttribute("aria-selected","true");
+  sections.forEach(s=>s.classList.remove("active"));
+  document.getElementById(t.dataset.tab).classList.add("active");
+}));
+const out = document.getElementById("out");
+const statusBadge = document.getElementById("statusBadge");
+const curlBox = document.getElementById("curlBox");
+const toast = document.getElementById("toast");
+function setBadge(ok,msg){
+  statusBadge.classList.remove("hidden");
+  statusBadge.textContent = msg;
+  statusBadge.classList.toggle("ok",ok);
+  statusBadge.classList.toggle("err",!ok);
+  statusBadge.classList.toggle("badge",true);
+  statusBadge.classList.toggle("ok",ok);
+  statusBadge.classList.toggle("err",!ok);
+}
+function copy(text){
+  navigator.clipboard.writeText(text).then(()=>{
+    toast.textContent="Copied";
+    toast.classList.add("show");
+    setTimeout(()=>toast.classList.remove("show"),900);
+  });
+}
+document.querySelectorAll("[data-copy]").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    const panel = btn.closest(".section").id;
+    if(panel==="search"){
+      const q = document.getElementById("q").value.trim()||"Believer";
+      copy(`${O}/sp/search?q=${encodeURIComponent(q)}`);
+    }else{
+      const u = document.getElementById("url").value.trim()||"https://open.spotify.com/track/0pqnGHJpmpxLKifKRmU6WP";
+      copy(`${O}/sp/dl?url=${encodeURIComponent(u)}`);
+    }
+  });
+});
+function setCurl(){
+  const q = encodeURIComponent("Believer");
+  const u = encodeURIComponent("https://open.spotify.com/track/0pqnGHJpmpxLKifKRmU6WP");
+  curlBox.textContent =
+`curl -sS "${O}/sp/search?q=${q}"
+curl -sS "${O}/sp/dl?url=${u}"`;
+}
+setCurl();
+document.getElementById("copyCurl").addEventListener("click",()=>copy(curlBox.textContent));
+async function call(path){
+  out.textContent="// loading...";
+  setBadge(true,"Loading");
+  try{
+    const r = await fetch(path);
+    const ok = r.ok;
+    const data = await r.json().catch(()=>({raw:"non-JSON"}));
+    setBadge(ok, ok?"Success":"Error "+r.status);
+    out.textContent = JSON.stringify(data,null,2);
+  }catch(e){
+    setBadge(false,"Network Error");
+    out.textContent = "/* error */\n"+e;
+  }
+}
+document.getElementById("btnSearch").addEventListener("click",()=>{
+  const q = document.getElementById("q").value.trim();
+  if(!q){ out.textContent="// enter a search query"; setBadge(false,"Input"); return;}
+  call(`/sp/search?q=${encodeURIComponent(q)}`);
+});
+document.getElementById("btnDL").addEventListener("click",()=>{
+  const u = document.getElementById("url").value.trim();
+  if(!u){ out.textContent="// paste a Spotify track URL"; setBadge(false,"Input"); return;}
+  call(`/sp/dl?url=${encodeURIComponent(u)}`);
+});
+window.addEventListener("keydown",(e)=>{
+  if(e.key==="Enter"){
+    if(document.getElementById("search").classList.contains("active")) document.getElementById("btnSearch").click();
+    else if(document.getElementById("download").classList.contains("active")) document.getElementById("btnDL").click();
+  }
+});
+</script>
+</body>
+</html>
