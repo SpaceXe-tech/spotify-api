@@ -1,4 +1,3 @@
-fastapi>=0.110
-httpx>=0.27
-pydantic>=2.7
-uvicorn>=0.30  # for local dev builds 
+fastapi==0.115.5
+httpx==0.27.2
+pydantic==2.9.2
