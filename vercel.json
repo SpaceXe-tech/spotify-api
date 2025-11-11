@@ -1,12 +1,10 @@
 {
   "version": 2,
   "functions": {
-    "backend/api/index.py": {
+    "api/index.py": {
       "runtime": "vercel@python",
-      "includeFiles": "backend/api/template/**"
+      "includeFiles": "api/template/**"
     }
   },
-  "routes": [
-    { "src": "/(.*)", "dest": "/backend/api/index.py" }
-  ]
+  "routes": [{ "src": "/(.*)", "dest": "/api/index.py" }]
 }
