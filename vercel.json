@@ -1,12 +1,18 @@
 {
+  "version": 2,
+  "regions": ["bom1", "sin1", "iad1"],
   "functions": {
     "api/index.py": {
-      "runtime": "python3.11"
+      "runtime": "python3.11",
+      "maxDuration": 10,
+      "memory": 1024,
+      "includeFiles": ["api/template/index.html"]
     }
   },
   "routes": [
     { "src": "/sp/(.*)", "dest": "/api/index.py" },
-    { "src": "/", "dest": "/api/index.py" }
+    { "src": "/(docs|openapi.json)", "dest": "/api/index.py" },
+    { "src": "/(.*)", "dest": "/api/index.py" }
   ],
   "env": {
     "SPOTIFY_CLIENT_ID": "d2f27b893fb64c3a97242d8a1e46c63c",
