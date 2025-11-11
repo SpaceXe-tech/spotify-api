@@ -1,0 +1,15 @@
+{
+  "functions": {
+    "api/index.py": {
+      "runtime": "python3.11"
+    }
+  },
+  "routes": [
+    { "src": "/sp/(.*)", "dest": "/api/index.py" },
+    { "src": "/", "dest": "/api/index.py" }
+  ],
+  "env": {
+    "SPOTIFY_CLIENT_ID": "d2f27b893fb64c3a97242d8a1e46c63c",
+    "SPOTIFY_CLIENT_SECRET": "8d31ddeef0614731be0e6cef6aebaad3"
+  }
+}
